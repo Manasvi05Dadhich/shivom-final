@@ -1,4 +1,9 @@
 import { useEffect, useMemo, useState } from 'react'
+import navLogo from './assets/5.png'
+import cobblesImg from './assets/cobbles.png'
+import paversImg from './assets/pavers.png'
+import basaltImg from './assets/basalt.jpeg'
+import basalt2Img from './assets/basalt2.jpeg'
 
 const DEFAULT_WA =
   'https://wa.me/919928764042?text=Hello%20Shiv%20Om%20Industries%2C%20I%20am%20interested%20in%20your%20stone%20products.'
@@ -7,6 +12,7 @@ function App() {
   const [page, setPage] = useState('home')
   const [isNavScrolled, setIsNavScrolled] = useState(false)
   const [modalIndex, setModalIndex] = useState(null)
+  const [pageEntered, setPageEntered] = useState(false)
 
   const products = useMemo(
     () => [
@@ -46,10 +52,10 @@ function App() {
       },
       {
         num: '03',
-        nameText: 'Natural Sandstone ',
+        nameText: 'Pavers',
         name: (
           <>
-            Sandstone <em>Sandstone</em>
+            <em>Pavers</em>
           </>
         ),
         bg: 'linear-gradient(160deg,#d4c4a4,#e8d8b8,#a89474)',
@@ -82,6 +88,9 @@ function App() {
     [],
   )
 
+  const pageClass = (name) =>
+    `page ${page === name ? 'active' : ''}${page === name && pageEntered ? ' page-entered' : ''}`
+
   const showPage = (name) => {
     setPage(name)
     window.scrollTo({ top: 0, behavior: 'smooth' })
@@ -89,6 +98,35 @@ function App() {
 
   const openModal = (i) => setModalIndex(i)
   const closeModal = () => setModalIndex(null)
+
+  useEffect(() => {
+    document.body.classList.add('app-loaded')
+  }, [])
+
+  useEffect(() => {
+    setPageEntered(false)
+    const id = requestAnimationFrame(() => {
+      requestAnimationFrame(() => setPageEntered(true))
+    })
+    return () => cancelAnimationFrame(id)
+  }, [page])
+
+  useEffect(() => {
+    const els = document.querySelectorAll('.fade-up')
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible')
+            io.unobserve(entry.target)
+          }
+        })
+      },
+      { threshold: 0.12, rootMargin: '0px 0px -40px 0px' },
+    )
+    els.forEach((el) => io.observe(el))
+    return () => io.disconnect()
+  }, [page])
 
   useEffect(() => {
     const onScroll = () => setIsNavScrolled(window.scrollY > 60)
@@ -117,7 +155,13 @@ function App() {
     <>
       <nav id="mainNav" className={isNavScrolled ? 'scrolled' : ''}>
         <div className="nav-logo" onClick={() => showPage('home')}>
-          SHIV <span>OM</span>
+          <img src={navLogo} alt="Shiv Om Industries" className="nav-logo-img" />
+          <span className="nav-logo-text">
+            <span className="nav-logo-name">
+              Shiv <span>Om</span>
+            </span>
+            <span className="nav-logo-tagline">Industries</span>
+          </span>
         </div>
         <div className="nav-links">
           <a
@@ -154,51 +198,30 @@ function App() {
       </nav>
 
       {/* ═══════════════════════════════ HOME ═══════════════════════════════ */}
-      <div className={`page ${page === 'home' ? 'active' : ''}`} id="page-home">
+      <div className={pageClass('home')} id="page-home">
         <section className="hero" style={{ padding: 0 }}>
           <div className="hero-left">
-            <div className="hero-eyebrow">Est. 2015 · Bigod, Bhilwara, Rajasthan</div>
+            <div className="hero-content">
+            <div className="hero-eyebrow">Bigod, Bhilwara, Rajasthan</div>
             <h1 className="hero-title">
-              Natural
+              Natural Stone
               <br />
-              Stone
-              <br />
-              <em>Crafted</em>
-              <br />
-              to Last
+              <em>Crafted</em> to Last
             </h1>
             <p className="hero-sub">
-              From the ancient quarries of Rajasthan, we source and supply premium
-              sandstone, basalt, and cobbles — to architects, developers, and designers
-              worldwide.
+              Premium sandstone, basalt &amp; cobbles — sourced from Rajasthan&apos;s
+              ancient quarries for architects, developers &amp; designers worldwide.
             </p>
 
-            <div
-              style={{
-                display: 'flex',
-                gap: 16,
-                alignItems: 'center',
-                flexWrap: 'wrap',
-                marginBottom: 20,
-              }}
-            >
+            <div className="hero-ctas">
               <button className="hero-cta-solid" onClick={() => showPage('products')}>
-                EXPLORE PRODUCTS &nbsp;→
-              </button>
-              <button
-                className="hero-cta-outline"
-                onClick={() => window.open(DEFAULT_WA, '_blank')}
-              >
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
-                </svg>
-                WhatsApp Us
+                Explore Products &nbsp;→
               </button>
             </div>
 
             <div className="hero-info-bar">
               <a
-                href="https://maps.google.com/?q=RIICO+Industrial+Area+Bigod+Bhilwara"
+                href="https://www.google.com/maps/place/SHIV+OM+INDUSTRIES/@25.2507888,75.0234927,17z/data=!3m1!4b1!4m6!3m5!1s0x3968a3770c7a6423:0x4fb47ce1fcae0a33!8m2!3d25.2507888!4d75.0234927!16s%2Fg%2F11wnzq53fl?entry=ttu"
                 target="_blank"
                 rel="noreferrer"
                 className="hero-info-item"
@@ -245,7 +268,7 @@ function App() {
 
             <div className="hero-stats">
               <div>
-                <span className="stat-num">10+</span>
+                <span className="stat-num">15+</span>
                 <span className="stat-label">Years in Stone</span>
               </div>
               <div>
@@ -253,9 +276,10 @@ function App() {
                 <span className="stat-label">Projects Supplied</span>
               </div>
               <div>
-                <span className="stat-num">20+</span>
+                <span className="stat-num">17+</span>
                 <span className="stat-label">Countries Served</span>
               </div>
+            </div>
             </div>
           </div>
 
@@ -268,17 +292,17 @@ function App() {
 
         <div className="marquee-strip">
           <div className="marquee-inner">
-            Sandstone Tiles <span>·</span> Sandstone Blocks <span>·</span> Basalt Stone{' '}
+            Natural Sandstone <span>·</span> Sandstone Blocks <span>·</span> Basalt Stone{' '}
             <span>·</span> Sandstone Slabs <span>·</span> Cobblestones <span>·</span>{' '}
             Stone Steps <span>·</span> Cladding <span>·</span> Pool Coping{' '}
-            <span>·</span> Flagstone <span>·</span> Sandstone Tiles <span>·</span>{' '}
+            <span>·</span> Flagstone <span>·</span> Natural Sandstone <span>·</span>{' '}
             Sandstone Blocks <span>·</span> Basalt Stone <span>·</span> Sandstone Slabs{' '}
             <span>·</span> Cobblestones <span>·</span> Stone Steps <span>·</span>{' '}
             Cladding <span>·</span> Pool Coping <span>·</span> Flagstone <span>·</span>
           </div>
         </div>
 
-        <section style={{ padding: 0, background: 'var(--dark)' }}>
+        <section className="fade-up" style={{ padding: 0, background: 'var(--dark)' }}>
           <div style={{ padding: '80px 60px 0' }}>
             <div className="section-eyebrow">Why Shiv Om</div>
             <h2 className="section-title">
@@ -325,7 +349,7 @@ function App() {
               <div className="usp-title">Global Export Ready</div>
               <div className="usp-text">
                 RIICO-registered, export-certified, and trusted by international buyers
-                across 20+ countries for over a decade.
+                across 17+ countries for over a decade.
               </div>
             </div>
             <div className="usp-item" style={{ borderBottom: 'none' }}>
@@ -367,21 +391,14 @@ function App() {
               <div className="usp-title">Competitive Pricing</div>
               <div className="usp-text">
                 Transparent pricing, no hidden fees. Premium stone at manufacturer-direct
-                rates starting ₹75/sq.ft.
+                rates starting at mimimal prices.
               </div>
             </div>
           </div>
         </section>
 
-        <section style={{ padding: '80px 60px', background: 'var(--black)' }}>
-          <div
-            style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'flex-end',
-              marginBottom: 60,
-            }}
-          >
+        <section className="fade-up" style={{ padding: '80px 60px', background: 'var(--black)' }}>
+          <div className="coll-header">
             <div>
               <div className="section-eyebrow">Our Stone</div>
               <h2 className="section-title">
@@ -393,10 +410,10 @@ function App() {
             </button>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 2 }}>
+          <div className="coll-grid">
             <div
-              className="coll-card"
-              style={{ background: products[0].bg }}
+              className="coll-card coll-card-photo"
+              style={{ backgroundImage: `url(${cobblesImg})` }}
               onClick={() => openModal(0)}
             >
               <div className="coll-card-overlay">
@@ -406,8 +423,8 @@ function App() {
               </div>
             </div>
             <div
-              className="coll-card"
-              style={{ background: products[1].bg }}
+              className="coll-card coll-card-photo"
+              style={{ backgroundImage: `url(${basalt2Img})` }}
               onClick={() => openModal(1)}
             >
               <div className="coll-card-overlay">
@@ -417,29 +434,19 @@ function App() {
               </div>
             </div>
             <div
-              className="coll-card"
-              style={{ background: products[2].bg }}
+              className="coll-card coll-card-photo"
+              style={{ backgroundImage: `url(${paversImg})` }}
               onClick={() => openModal(2)}
             >
-              <div
-                className="coll-card-overlay"
-                style={{
-                  background:
-                    'linear-gradient(to top,rgba(100,80,40,0.8) 0%,transparent 50%)',
-                }}
-              >
-                <div className="coll-card-num" style={{ color: 'rgba(100,60,20,.6)' }}>
-                  03
-                </div>
-                <div className="coll-card-name" style={{ color: '#2a1a08' }}>
-                  Sandstone Tiles
-                </div>
+              <div className="coll-card-overlay">
+                <div className="coll-card-num">03</div>
+                <div className="coll-card-name">Pavers</div>
                 <div className="coll-card-hint">View Details ↗</div>
               </div>
             </div>
             <div
-              className="coll-card"
-              style={{ background: products[3].bg }}
+              className="coll-card coll-card-photo"
+              style={{ backgroundImage: `url(${cobblesImg})` }}
               onClick={() => openModal(3)}
             >
               <div className="coll-card-overlay">
@@ -452,27 +459,81 @@ function App() {
         </section>
 
         <footer>
-          <div>
-            <div className="footer-logo">
-              SHIV <span>OM</span> INDUSTRIES
+          <div className="footer-main">
+            <div className="footer-brand">
+              <div className="footer-logo">
+                Shiv <span>Om</span> Industries
+              </div>
+              <div className="footer-brand-desc">
+                Premium natural sandstone manufacturer and exporter from Rajasthan, India. Serving global markets with architectural-grade stone products.
+              </div>
             </div>
-            <div
-              style={{
-                fontSize: 11,
-                color: 'var(--muted)',
-                marginTop: 8,
-                letterSpacing: '.05em',
-              }}
-            >
-              F-7(A), RIICO Industrial Area, Bigod, Bhilwara — 311601
+
+            <div className="footer-col">
+              <div className="footer-col-title">Quick Links</div>
+              <ul className="footer-links">
+                <li><span onClick={() => showPage('about')}>About Us</span></li>
+                <li><span onClick={() => showPage('products')}>Products</span></li>
+                <li><span onClick={() => showPage('projects')}>Projects</span></li>
+                <li><span onClick={() => showPage('contact')}>Contact</span></li>
+              </ul>
+            </div>
+
+            <div className="footer-col">
+              <div className="footer-col-title">Product Range</div>
+              <ul className="footer-links">
+                <li><span onClick={() => showPage('products')}>Wall Claddings</span></li>
+                <li><span onClick={() => showPage('products')}>Stone Steps</span></li>
+                <li><span onClick={() => showPage('products')}>Steppings</span></li>
+                <li><span onClick={() => showPage('products')}>Pavers</span></li>
+                <li><span onClick={() => showPage('products')}>Cobbles</span></li>
+                <li><span onClick={() => showPage('products')}>Circulars</span></li>
+              </ul>
+            </div>
+
+            <div className="footer-col">
+              <div className="footer-col-title">Contact</div>
+              <div className="footer-contact-item">
+                <svg className="footer-contact-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                  <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
+                </svg>
+                <div className="footer-contact-text">
+                  RIICO Industrial Area, Plot No. F7(A), Bigod, Dist. Bhilwara-311601, Rajasthan, India
+                </div>
+              </div>
+              <div className="footer-contact-item">
+                <svg className="footer-contact-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+                  <polyline points="22,6 12,13 2,6" />
+                </svg>
+                <div className="footer-contact-text">
+                  <a href="mailto:info@shivomindustries.com">info@shivomindustries.com</a>
+                </div>
+              </div>
+              <div className="footer-contact-item">
+                <svg className="footer-contact-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                  <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z" />
+                </svg>
+                <div className="footer-contact-text">
+                  <a href="tel:+919928764042">+91 9928764042 / 8094567287</a>
+                </div>
+              </div>
             </div>
           </div>
-          <div className="footer-copy">© 2025 Shiv Om Industries. All rights reserved.</div>
+
+          <div className="footer-bottom">
+            <div className="footer-copy">&copy; 2026 Shiv Om Industries. All rights reserved.</div>
+            <div className="footer-policy-links">
+              <a href="#">Privacy Policy</a>
+              <a href="#">Terms of Service</a>
+              <a href="#">Export Terms</a>
+            </div>
+          </div>
         </footer>
       </div>
 
       {/* ═══════════════════════════════ ABOUT ═══════════════════════════════ */}
-      <div className={`page ${page === 'about' ? 'active' : ''}`} id="page-about">
+      <div className={pageClass('about')} id="page-about">
         <div className="about-hero">
           <div className="about-bg-text">ABOUT</div>
           <div className="section-eyebrow" style={{ marginTop: 0 }}>
@@ -506,14 +567,14 @@ function App() {
               supply stories built into surfaces that will outlast generations.
             </p>
             <p>
-              Our reach today extends across 20+ countries, serving architects, interior
+              Our reach today extends across 17+ countries, serving architects, interior
               designers, hotel groups, and landscaping firms who demand nothing less than
               the finest natural stone available on earth.
             </p>
           </div>
           <div className="about-stats">
             <div className="about-stat">
-              <div className="about-stat-num">10+</div>
+              <div className="about-stat-num">15+</div>
               <div className="about-stat-label">Years of Excellence</div>
             </div>
             <div className="about-stat">
@@ -521,7 +582,7 @@ function App() {
               <div className="about-stat-label">Projects Completed</div>
             </div>
             <div className="about-stat">
-              <div className="about-stat-num">20+</div>
+              <div className="about-stat-num">17+</div>
               <div className="about-stat-label">Countries Exported To</div>
             </div>
             <div className="about-stat">
@@ -662,28 +723,80 @@ function App() {
         </section>
 
         <footer>
-          <div>
-            <div className="footer-logo">
-              SHIV <span>OM</span> INDUSTRIES
+          <div className="footer-main">
+            <div className="footer-brand">
+              <div className="footer-logo">
+                Shiv <span>Om</span> Industries
+              </div>
+              <div className="footer-brand-desc">
+                Premium natural sandstone manufacturer and exporter from Rajasthan, India. Serving global markets with architectural-grade stone products.
+              </div>
             </div>
-            <div
-              style={{
-                fontSize: 11,
-                color: 'var(--muted)',
-                marginTop: 8,
-                letterSpacing: '.05em',
-              }}
-            >
-              F-7(A), RIICO Industrial Area, Bigod, Bhilwara — 311601
+
+            <div className="footer-col">
+              <div className="footer-col-title">Quick Links</div>
+              <ul className="footer-links">
+                <li><span onClick={() => showPage('about')}>About Us</span></li>
+                <li><span onClick={() => showPage('products')}>Products</span></li>
+                <li><span onClick={() => showPage('projects')}>Projects</span></li>
+                <li><span onClick={() => showPage('contact')}>Contact</span></li>
+              </ul>
+            </div>
+
+            <div className="footer-col">
+              <div className="footer-col-title">Product Range</div>
+              <ul className="footer-links">
+                <li><span onClick={() => showPage('products')}>Wall Claddings</span></li>
+                <li><span onClick={() => showPage('products')}>Stone Steps</span></li>
+                <li><span onClick={() => showPage('products')}>Steppings</span></li>
+                <li><span onClick={() => showPage('products')}>Pavers</span></li>
+                <li><span onClick={() => showPage('products')}>Cobbles</span></li>
+                <li><span onClick={() => showPage('products')}>Circulars</span></li>
+              </ul>
+            </div>
+
+            <div className="footer-col">
+              <div className="footer-col-title">Contact</div>
+              <div className="footer-contact-item">
+                <svg className="footer-contact-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                  <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
+                </svg>
+                <div className="footer-contact-text">
+                  RIICO Industrial Area, Plot No. F7(A), Bigod, Dist. Bhilwara-311601, Rajasthan, India
+                </div>
+              </div>
+              <div className="footer-contact-item">
+                <svg className="footer-contact-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+                  <polyline points="22,6 12,13 2,6" />
+                </svg>
+                <div className="footer-contact-text">
+                  <a href="mailto:info@shivomindustries.com">info@shivomindustries.com</a>
+                </div>
+              </div>
+              <div className="footer-contact-item">
+                <svg className="footer-contact-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                  <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z" />
+                </svg>
+                <div className="footer-contact-text">
+                  <a href="tel:+919928764042">+91 9928764042 / 8094567287</a>
+                </div>
+              </div>
             </div>
           </div>
-          <div className="footer-copy">© 2025 Shiv Om Industries. All rights reserved.</div>
+
+          <div className="footer-bottom">
+            <div className="footer-copy">&copy; 2026 Shiv Om Industries. All rights reserved.</div>
+            <div className="footer-policy-links">
+              <a href="#">Privacy Policy</a>
+              <a href="#">Terms of Service</a>
+              <a href="#">Export Terms</a>
+            </div>
+          </div>
         </footer>
       </div>
-
-      {/* ═══════════════════════════════ PRODUCTS ═══════════════════════════════ */}
       <div
-        className={`page ${page === 'products' ? 'active' : ''}`}
+        className={pageClass('products')}
         id="page-products"
       >
         <div style={{ padding: '160px 60px 80px', position: 'relative', overflow: 'hidden' }}>
@@ -790,7 +903,7 @@ function App() {
             <div className="product-info">
               <div className="product-num">03</div>
               <h2 className="product-name">
-                Sandstone <em>Tiles</em>
+                <em>Pavers</em>
               </h2>
               <p className="product-desc">
                 Polished sandstone tiles in multi-sizes, calibrated for precision installation.
@@ -834,11 +947,11 @@ function App() {
               </h2>
               <p className="product-desc">
                 Traditionally hand-shaped cobblestones that bring old-world character to modern
-                landscapes. Widely used in garden paths, driveways, courtyards, and heritage
-                restoration projects.
-              </p>
-              <table className="spec-table">
-                <tbody>
+              landscapes. Widely used in garden paths, driveways, courtyards, and heritage
+              restoration projects.
+            </p>
+            <table className="spec-table">
+              <tbody>
                   <tr>
                     <td>Shape</td>
                     <td>Natural · Semi-dressed · Uniform</td>
@@ -946,28 +1059,82 @@ function App() {
         </div>
 
         <footer>
-          <div>
-            <div className="footer-logo">
-              SHIV <span>OM</span> INDUSTRIES
+          <div className="footer-main">
+            <div className="footer-brand">
+              <div className="footer-logo">
+                Shiv <span>Om</span> Industries
+              </div>
+              <div className="footer-brand-desc">
+                Premium natural sandstone manufacturer and exporter from Rajasthan, India. Serving global markets with architectural-grade stone products.
+              </div>
             </div>
-            <div
-              style={{
-                fontSize: 11,
-                color: 'var(--muted)',
-                marginTop: 8,
-                letterSpacing: '.05em',
-              }}
-            >
-              F-7(A), RIICO Industrial Area, Bigod, Bhilwara — 311601
+
+            <div className="footer-col">
+              <div className="footer-col-title">Quick Links</div>
+              <ul className="footer-links">
+                <li><span onClick={() => showPage('about')}>About Us</span></li>
+                <li><span onClick={() => showPage('products')}>Products</span></li>
+                <li><span onClick={() => showPage('projects')}>Projects</span></li>
+                <li><span onClick={() => showPage('contact')}>Contact</span></li>
+              </ul>
+            </div>
+
+            <div className="footer-col">
+              <div className="footer-col-title">Product Range</div>
+              <ul className="footer-links">
+                <li><span onClick={() => showPage('products')}>Wall Claddings</span></li>
+                <li><span onClick={() => showPage('products')}>Stone Steps</span></li>
+                <li><span onClick={() => showPage('products')}>Steppings</span></li>
+                <li><span onClick={() => showPage('products')}>Pavers</span></li>
+                <li><span onClick={() => showPage('products')}>Cobbles</span></li>
+                <li><span onClick={() => showPage('products')}>Circulars</span></li>
+              </ul>
+            </div>
+
+            <div className="footer-col">
+              <div className="footer-col-title">Contact</div>
+              <div className="footer-contact-item">
+                <svg className="footer-contact-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                  <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
+                </svg>
+                <div className="footer-contact-text">
+                  RIICO Industrial Area, Plot No. F7(A), Bigod, Dist. Bhilwara-311601, Rajasthan, India
+                </div>
+              </div>
+              <div className="footer-contact-item">
+                <svg className="footer-contact-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+                  <polyline points="22,6 12,13 2,6" />
+                </svg>
+                <div className="footer-contact-text">
+                  <a href="mailto:info@shivomindustries.com">info@shivomindustries.com</a>
+                </div>
+              </div>
+              <div className="footer-contact-item">
+                <svg className="footer-contact-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                  <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z" />
+                </svg>
+                <div className="footer-contact-text">
+                  <a href="tel:+919928764042">+91 9928764042 / 8094567287</a>
+                </div>
+              </div>
             </div>
           </div>
-          <div className="footer-copy">© 2025 Shiv Om Industries. All rights reserved.</div>
+
+          <div className="footer-bottom">
+            <div className="footer-copy">&copy; 2026 Shiv Om Industries. All rights reserved.</div>
+            <div className="footer-policy-links">
+              <a href="#">Privacy Policy</a>
+              <a href="#">Terms of Service</a>
+              <a href="#">Export Terms</a>
+            </div>
+          </div>
         </footer>
       </div>
 
       {/* ═══════════════════════════════ PROJECTS ═══════════════════════════════ */}
       <div
-        className={`page ${page === 'projects' ? 'active' : ''}`}
+        className={pageClass('projects')}
         id="page-projects"
       >
         <div style={{ padding: '160px 60px 80px', position: 'relative', overflow: 'hidden' }}>
@@ -1113,28 +1280,80 @@ function App() {
         </div>
 
         <footer>
-          <div>
-            <div className="footer-logo">
-              SHIV <span>OM</span> INDUSTRIES
+          <div className="footer-main">
+            <div className="footer-brand">
+              <div className="footer-logo">
+                Shiv <span>Om</span> Industries
+              </div>
+              <div className="footer-brand-desc">
+                Premium natural sandstone manufacturer and exporter from Rajasthan, India. Serving global markets with architectural-grade stone products.
+              </div>
             </div>
-            <div
-              style={{
-                fontSize: 11,
-                color: 'var(--muted)',
-                marginTop: 8,
-                letterSpacing: '.05em',
-              }}
-            >
-              F-7(A), RIICO Industrial Area, Bigod, Bhilwara — 311601
+
+            <div className="footer-col">
+              <div className="footer-col-title">Quick Links</div>
+              <ul className="footer-links">
+                <li><span onClick={() => showPage('about')}>About Us</span></li>
+                <li><span onClick={() => showPage('products')}>Products</span></li>
+                <li><span onClick={() => showPage('projects')}>Projects</span></li>
+                <li><span onClick={() => showPage('contact')}>Contact</span></li>
+              </ul>
+            </div>
+
+            <div className="footer-col">
+              <div className="footer-col-title">Product Range</div>
+              <ul className="footer-links">
+                <li><span onClick={() => showPage('products')}>Wall Claddings</span></li>
+                <li><span onClick={() => showPage('products')}>Stone Steps</span></li>
+                <li><span onClick={() => showPage('products')}>Steppings</span></li>
+                <li><span onClick={() => showPage('products')}>Pavers</span></li>
+                <li><span onClick={() => showPage('products')}>Cobbles</span></li>
+                <li><span onClick={() => showPage('products')}>Circulars</span></li>
+              </ul>
+            </div>
+
+            <div className="footer-col">
+              <div className="footer-col-title">Contact</div>
+              <div className="footer-contact-item">
+                <svg className="footer-contact-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                  <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
+                </svg>
+                <div className="footer-contact-text">
+                  RIICO Industrial Area, Plot No. F7(A), Bigod, Dist. Bhilwara-311601, Rajasthan, India
+                </div>
+              </div>
+              <div className="footer-contact-item">
+                <svg className="footer-contact-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+                  <polyline points="22,6 12,13 2,6" />
+                </svg>
+                <div className="footer-contact-text">
+                  <a href="mailto:info@shivomindustries.com">info@shivomindustries.com</a>
+                </div>
+              </div>
+              <div className="footer-contact-item">
+                <svg className="footer-contact-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                  <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z" />
+                </svg>
+                <div className="footer-contact-text">
+                  <a href="tel:+919928764042">+91 9928764042 / 8094567287</a>
+                </div>
+              </div>
             </div>
           </div>
-          <div className="footer-copy">© 2025 Shiv Om Industries. All rights reserved.</div>
+
+          <div className="footer-bottom">
+            <div className="footer-copy">&copy; 2026 Shiv Om Industries. All rights reserved.</div>
+            <div className="footer-policy-links">
+              <a href="#">Privacy Policy</a>
+              <a href="#">Terms of Service</a>
+              <a href="#">Export Terms</a>
+            </div>
+          </div>
         </footer>
       </div>
-
-      {/* ═══════════════════════════════ CONTACT ═══════════════════════════════ */}
       <div
-        className={`page ${page === 'contact' ? 'active' : ''}`}
+        className={pageClass('contact')}
         id="page-contact"
       >
         <div style={{ padding: '160px 60px 80px', position: 'relative', overflow: 'hidden' }}>
@@ -1231,7 +1450,7 @@ function App() {
                 <option value="">Select a product</option>
                 <option>Sandstone Blocks</option>
                 <option>Basalt Stone</option>
-                <option>Sandstone Tiles</option>
+                <option>Natural Sandstone</option>
                 <option>Sandstone Cobbles</option>
                 <option>Sandstone Slabs</option>
                 <option>Stone Steps</option>
@@ -1249,22 +1468,76 @@ function App() {
         </div>
 
         <footer>
-          <div>
-            <div className="footer-logo">
-              SHIV <span>OM</span> INDUSTRIES
+          <div className="footer-main">
+            <div className="footer-brand">
+              <div className="footer-logo">
+                Shiv <span>Om</span> Industries
+              </div>
+              <div className="footer-brand-desc">
+                Premium natural sandstone manufacturer and exporter from Rajasthan, India. Serving global markets with architectural-grade stone products.
+              </div>
             </div>
-            <div
-              style={{
-                fontSize: 11,
-                color: 'var(--muted)',
-                marginTop: 8,
-                letterSpacing: '.05em',
-              }}
-            >
-              F-7(A), RIICO Industrial Area, Bigod, Bhilwara — 311601
+
+            <div className="footer-col">
+              <div className="footer-col-title">Quick Links</div>
+              <ul className="footer-links">
+                <li><span onClick={() => showPage('about')}>About Us</span></li>
+                <li><span onClick={() => showPage('products')}>Products</span></li>
+                <li><span onClick={() => showPage('projects')}>Projects</span></li>
+                <li><span onClick={() => showPage('contact')}>Contact</span></li>
+              </ul>
+            </div>
+
+            <div className="footer-col">
+              <div className="footer-col-title">Product Range</div>
+              <ul className="footer-links">
+                <li><span onClick={() => showPage('products')}>Wall Claddings</span></li>
+                <li><span onClick={() => showPage('products')}>Stone Steps</span></li>
+                <li><span onClick={() => showPage('products')}>Steppings</span></li>
+                <li><span onClick={() => showPage('products')}>Pavers</span></li>
+                <li><span onClick={() => showPage('products')}>Cobbles</span></li>
+                <li><span onClick={() => showPage('products')}>Circulars</span></li>
+              </ul>
+            </div>
+
+            <div className="footer-col">
+              <div className="footer-col-title">Contact</div>
+              <div className="footer-contact-item">
+                <svg className="footer-contact-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                  <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
+                </svg>
+                <div className="footer-contact-text">
+                  RIICO Industrial Area, Plot No. F7(A), Bigod, Dist. Bhilwara-311601, Rajasthan, India
+                </div>
+              </div>
+              <div className="footer-contact-item">
+                <svg className="footer-contact-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+                  <polyline points="22,6 12,13 2,6" />
+                </svg>
+                <div className="footer-contact-text">
+                  <a href="mailto:info@shivomindustries.com">info@shivomindustries.com</a>
+                </div>
+              </div>
+              <div className="footer-contact-item">
+                <svg className="footer-contact-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                  <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z" />
+                </svg>
+                <div className="footer-contact-text">
+                  <a href="tel:+919928764042">+91 9928764042 / 8094567287</a>
+                </div>
+              </div>
             </div>
           </div>
-          <div className="footer-copy">© 2025 Shiv Om Industries. All rights reserved.</div>
+
+          <div className="footer-bottom">
+            <div className="footer-copy">&copy; 2026 Shiv Om Industries. All rights reserved.</div>
+            <div className="footer-policy-links">
+              <a href="#">Privacy Policy</a>
+              <a href="#">Terms of Service</a>
+              <a href="#">Export Terms</a>
+            </div>
+          </div>
         </footer>
       </div>
 
