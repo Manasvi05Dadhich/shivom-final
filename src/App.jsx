@@ -4,7 +4,12 @@ import cobblesImg from './assets/cobbles.png'
 import paversImg from './assets/pavers.png'
 import basaltImg from './assets/basalt.jpeg'
 import basalt2Img from './assets/basalt2.jpeg'
-
+import stoneImg from './assets/1.png'
+import sandstoneImg from './assets/sandstoneblock.jpeg'
+import designImg from './assets/design.jpeg'
+import wallCladdingImg from './assets/claddings.jpeg'
+import wallCladdingImg2 from './assets/cladding2.jpeg'
+import slabs from './assets/slab.jpeg'
 const DEFAULT_WA =
   'https://wa.me/919928764042?text=Hello%20Shiv%20Om%20Industries%2C%20I%20am%20interested%20in%20your%20stone%20products.'
 
@@ -84,6 +89,88 @@ function App() {
           ['Supply', 'By the tonne or pallet'],
         ],
       },
+      {
+        num: '05',
+        nameText: 'Designs',
+        name: (
+          <>
+            <em>Designs</em>
+          </>
+        ),
+        bg: 'linear-gradient(160deg,#6a5a48,#a89078,#3d3028)',
+        desc: 'Bespoke stone layouts and architectural concepts — from courtyard paving plans to feature wall compositions tailored to your project vision.',
+        specs: [
+          ['Service', 'Custom Layouts · CAD Drawings · Sample Mockups'],
+          ['Application', 'Residential · Commercial · Landscape'],
+          ['Materials', 'Sandstone · Basalt · Mixed Stone'],
+          ['Turnaround', 'On consultation'],
+        ],
+      },
+      {
+        num: '06',
+        nameText: 'Slabs, Tiles and Finish',
+        name: (
+          <>
+            Slabs, Tiles <em>and Finish</em>
+          </>
+        ),
+        bg: 'linear-gradient(160deg,#c8b898,#e0d0b0,#9a8870)',
+        desc: 'Large-format slabs and calibrated tiles in polished, honed, brushed, and natural finishes — precision-cut for flooring, cladding, and interior surfaces.',
+        specs: [
+          ['Finish', 'Polished · Honed · Brushed · Natural'],
+          ['Formats', 'Slabs · Tiles · Custom Cuts'],
+          ['Thickness', '18mm · 20mm · Custom'],
+          ['Application', 'Flooring · Walls · Countertops'],
+        ],
+      },
+      {
+        num: '07',
+        nameText: 'Patterns',
+        name: (
+          <>
+            <em>Patterns</em>
+          </>
+        ),
+        bg: 'linear-gradient(160deg,#5a4a3a,#8a7a68,#2a2018)',
+        desc: 'Decorative paving and cladding patterns — herringbone, basket weave, random ashlar, and custom geometric layouts crafted from natural stone.',
+        specs: [
+          ['Styles', 'Herringbone · Basket Weave · Ashlar · Custom'],
+          ['Application', 'Patios · Driveways · Feature Walls'],
+          ['Stone Types', 'Sandstone · Basalt · Cobbles'],
+          ['Installation', 'Dry-laid · Mortar-set'],
+        ],
+      },
+      {
+        num: '08',
+        nameText: 'Steps and Trades',
+        name: (
+          <>
+            Steps <em>and Trades</em>
+          </>
+        ),
+        bg: 'linear-gradient(160deg,#4a4038,#7a6a58,#2a2218)',
+        desc: 'Fine-polished sandstone steps, treads, and trade stone for staircases, entrances, and landscape transitions — durable and architecturally refined.',
+        specs: [
+          ['Products', 'Steps · Treads · Risers · Coping'],
+          ['Application', 'Interior Stairs · Entrances · Garden'],
+          ['Finish', 'Polished · Honed · Natural'],
+          ['Custom Size', 'Yes — available on order'],
+        ],
+      },
+    ],
+    [],
+  )
+
+  const collectionCards = useMemo(
+    () => [
+      { img: sandstoneImg, modal: 0, num: '01', name: 'Sandstone Blocks' },
+      { img: basaltImg, modal: 1, num: '02', name: 'Basalt Stone' },
+      { img: paversImg, modal: 2, num: '03', name: 'Pavers' },
+      { img: cobblesImg, modal: 3, num: '04', name: 'Cobblestones' },
+      { img: designImg, modal: 4, num: '05', name: 'Architectural Applications/Designs' },
+      { img: slabs, modal: 5, num: '06', name: 'Slabs, Tiles and Finish' },
+      { img: wallCladdingImg2, modal: 6, num: '07', name: 'Wall Claddings' },
+      { img: wallCladdingImg, modal: 7, num: '08', name: 'Steps and Trades' },
     ],
     [],
   )
@@ -98,6 +185,13 @@ function App() {
 
   const openModal = (i) => setModalIndex(i)
   const closeModal = () => setModalIndex(null)
+
+  const handleCollCardKeyDown = (e, modal) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault()
+      openModal(modal)
+    }
+  }
 
   useEffect(() => {
     document.body.classList.add('app-loaded')
@@ -397,7 +491,7 @@ function App() {
           </div>
         </section>
 
-        <section className="fade-up" style={{ padding: '80px 60px', background: 'var(--black)' }}>
+        <section className="coll-section fade-up">
           <div className="coll-header">
             <div>
               <div className="section-eyebrow">Our Stone</div>
@@ -411,50 +505,23 @@ function App() {
           </div>
 
           <div className="coll-grid">
-            <div
-              className="coll-card coll-card-photo"
-              style={{ backgroundImage: `url(${cobblesImg})` }}
-              onClick={() => openModal(0)}
-            >
-              <div className="coll-card-overlay">
-                <div className="coll-card-num">01</div>
-                <div className="coll-card-name">Sandstone Blocks</div>
-                <div className="coll-card-hint">View Details ↗</div>
+            {collectionCards.map((card) => (
+              <div
+                key={card.num}
+                className="coll-card coll-card-photo"
+                style={{ backgroundImage: `url(${card.img})` }}
+                role="button"
+                tabIndex={0}
+                onClick={() => openModal(card.modal)}
+                onKeyDown={(e) => handleCollCardKeyDown(e, card.modal)}
+              >
+                <div className="coll-card-overlay">
+                  <div className="coll-card-num">{card.num}</div>
+                  <div className="coll-card-name">{card.name}</div>
+                  <div className="coll-card-hint">View Details ↗</div>
+                </div>
               </div>
-            </div>
-            <div
-              className="coll-card coll-card-photo"
-              style={{ backgroundImage: `url(${basalt2Img})` }}
-              onClick={() => openModal(1)}
-            >
-              <div className="coll-card-overlay">
-                <div className="coll-card-num">02</div>
-                <div className="coll-card-name">Basalt Stone</div>
-                <div className="coll-card-hint">View Details ↗</div>
-              </div>
-            </div>
-            <div
-              className="coll-card coll-card-photo"
-              style={{ backgroundImage: `url(${paversImg})` }}
-              onClick={() => openModal(2)}
-            >
-              <div className="coll-card-overlay">
-                <div className="coll-card-num">03</div>
-                <div className="coll-card-name">Pavers</div>
-                <div className="coll-card-hint">View Details ↗</div>
-              </div>
-            </div>
-            <div
-              className="coll-card coll-card-photo"
-              style={{ backgroundImage: `url(${cobblesImg})` }}
-              onClick={() => openModal(3)}
-            >
-              <div className="coll-card-overlay">
-                <div className="coll-card-num">04</div>
-                <div className="coll-card-name">Cobblestones</div>
-                <div className="coll-card-hint">View Details ↗</div>
-              </div>
-            </div>
+            ))}
           </div>
         </section>
 
@@ -524,7 +591,15 @@ function App() {
           <div className="footer-bottom">
             <div className="footer-copy">&copy; 2026 Shiv Om Industries. All rights reserved.</div>
             <div className="footer-policy-links">
-              <a href="#">Privacy Policy</a>
+              <a
+                href="#"
+                onClick={(e) => {
+                  e.preventDefault()
+                  showPage('privacy')
+                }}
+              >
+                Privacy Policy
+              </a>
               <a href="#">Terms of Service</a>
               <a href="#">Export Terms</a>
             </div>
@@ -586,7 +661,7 @@ function App() {
               <div className="about-stat-label">Countries Exported To</div>
             </div>
             <div className="about-stat">
-              <div className="about-stat-num">6</div>
+              <div className="about-stat-num">15 +</div>
               <div className="about-stat-label">Stone Varieties</div>
             </div>
           </div>
@@ -788,7 +863,15 @@ function App() {
           <div className="footer-bottom">
             <div className="footer-copy">&copy; 2026 Shiv Om Industries. All rights reserved.</div>
             <div className="footer-policy-links">
-              <a href="#">Privacy Policy</a>
+              <a
+                href="#"
+                onClick={(e) => {
+                  e.preventDefault()
+                  showPage('privacy')
+                }}
+              >
+                Privacy Policy
+              </a>
               <a href="#">Terms of Service</a>
               <a href="#">Export Terms</a>
             </div>
@@ -1124,7 +1207,15 @@ function App() {
           <div className="footer-bottom">
             <div className="footer-copy">&copy; 2026 Shiv Om Industries. All rights reserved.</div>
             <div className="footer-policy-links">
-              <a href="#">Privacy Policy</a>
+              <a
+                href="#"
+                onClick={(e) => {
+                  e.preventDefault()
+                  showPage('privacy')
+                }}
+              >
+                Privacy Policy
+              </a>
               <a href="#">Terms of Service</a>
               <a href="#">Export Terms</a>
             </div>
@@ -1345,7 +1436,15 @@ function App() {
           <div className="footer-bottom">
             <div className="footer-copy">&copy; 2026 Shiv Om Industries. All rights reserved.</div>
             <div className="footer-policy-links">
-              <a href="#">Privacy Policy</a>
+              <a
+                href="#"
+                onClick={(e) => {
+                  e.preventDefault()
+                  showPage('privacy')
+                }}
+              >
+                Privacy Policy
+              </a>
               <a href="#">Terms of Service</a>
               <a href="#">Export Terms</a>
             </div>
@@ -1533,7 +1632,295 @@ function App() {
           <div className="footer-bottom">
             <div className="footer-copy">&copy; 2026 Shiv Om Industries. All rights reserved.</div>
             <div className="footer-policy-links">
-              <a href="#">Privacy Policy</a>
+              <a
+                href="#"
+                onClick={(e) => {
+                  e.preventDefault()
+                  showPage('privacy')
+                }}
+              >
+                Privacy Policy
+              </a>
+              <a href="#">Terms of Service</a>
+              <a href="#">Export Terms</a>
+            </div>
+          </div>
+        </footer>
+      </div>
+
+      {/* ═══════════════════════════════ PRIVACY ═══════════════════════════════ */}
+      <div className={pageClass('privacy')} id="page-privacy">
+        <div className="legal-hero">
+          <div className="legal-hero-glow" aria-hidden="true" />
+          <h1 className="legal-hero-title">Privacy Policy</h1>
+          <p className="legal-hero-date">Last Updated: June 2026</p>
+        </div>
+
+        <div className="legal-body">
+          <div className="legal-prose">
+            <div className="legal-intro">
+              <p>
+                At <strong>Shiv Om Industries</strong> (&quot;Company&quot;, &quot;we&quot;, &quot;our&quot;, or
+                &quot;us&quot;), we respect your privacy and are committed to protecting any personal
+                information you provide while using our website.
+              </p>
+              <p>
+                This Privacy Policy explains how we collect, use, disclose, and safeguard your
+                information when you visit our website.
+              </p>
+            </div>
+
+            <hr className="legal-divider" />
+
+            <section className="legal-section">
+              <h2>1. Information We Collect</h2>
+              <p>We may collect the following information when you interact with our website:</p>
+              <h3>Personal Information</h3>
+              <ul className="legal-list">
+                <li>Name</li>
+                <li>Email address</li>
+                <li>Phone number</li>
+                <li>Company name</li>
+                <li>Country/Location</li>
+                <li>Any information submitted through inquiry or contact forms</li>
+              </ul>
+              <h3>Non-Personal Information</h3>
+              <ul className="legal-list">
+                <li>Browser type</li>
+                <li>Device information</li>
+                <li>IP address</li>
+                <li>Pages visited</li>
+                <li>Time spent on the website</li>
+                <li>Referring website information</li>
+              </ul>
+            </section>
+
+            <hr className="legal-divider" />
+
+            <section className="legal-section">
+              <h2>2. How We Use Your Information</h2>
+              <p>We may use the information collected to:</p>
+              <ul className="legal-list">
+                <li>Respond to inquiries and quotation requests</li>
+                <li>Provide information about our products and services</li>
+                <li>Improve website functionality and user experience</li>
+                <li>Communicate regarding orders, products, and business opportunities</li>
+                <li>Maintain internal business records</li>
+                <li>Comply with legal obligations</li>
+              </ul>
+            </section>
+
+            <hr className="legal-divider" />
+
+            <section className="legal-section">
+              <h2>3. Sharing of Information</h2>
+              <p>
+                Shiv Om Industries does not sell, rent, or trade your personal information to
+                third parties.
+              </p>
+              <p>We may share information with:</p>
+              <ul className="legal-list">
+                <li>Service providers assisting in website operation</li>
+                <li>Government or regulatory authorities when required by law</li>
+                <li>Professional advisors for legal or business purposes</li>
+              </ul>
+            </section>
+
+            <hr className="legal-divider" />
+
+            <section className="legal-section">
+              <h2>4. Cookies and Tracking Technologies</h2>
+              <p>
+                Our website may use cookies and similar technologies to enhance user experience
+                and analyze website traffic.
+              </p>
+              <p>
+                Users may choose to disable cookies through their browser settings; however, some
+                website features may not function properly.
+              </p>
+            </section>
+
+            <hr className="legal-divider" />
+
+            <section className="legal-section">
+              <h2>5. Data Security</h2>
+              <p>
+                We implement reasonable technical and organizational measures to protect personal
+                information from unauthorized access, disclosure, alteration, or destruction.
+              </p>
+              <p>
+                While we strive to protect your information, no method of electronic transmission
+                or storage is completely secure.
+              </p>
+            </section>
+
+            <hr className="legal-divider" />
+
+            <section className="legal-section">
+              <h2>6. Third-Party Links</h2>
+              <p>
+                Our website may contain links to external websites. We are not responsible for the
+                privacy practices, content, or policies of third-party websites.
+              </p>
+              <p>
+                Users are encouraged to review the privacy policies of any external websites they
+                visit.
+              </p>
+            </section>
+
+            <hr className="legal-divider" />
+
+            <section className="legal-section">
+              <h2>7. Data Retention</h2>
+              <p>
+                We retain personal information only for as long as necessary to fulfill business
+                purposes, comply with legal requirements, resolve disputes, and enforce agreements.
+              </p>
+            </section>
+
+            <hr className="legal-divider" />
+
+            <section className="legal-section">
+              <h2>8. Your Rights</h2>
+              <p>Depending on applicable laws, you may have the right to:</p>
+              <ul className="legal-list">
+                <li>Request access to your personal information</li>
+                <li>Request correction of inaccurate information</li>
+                <li>Request deletion of personal information</li>
+                <li>Withdraw consent where applicable</li>
+              </ul>
+              <p>Requests may be submitted using the contact information provided below.</p>
+            </section>
+
+            <hr className="legal-divider" />
+
+            <section className="legal-section">
+              <h2>9. Children&apos;s Privacy</h2>
+              <p>
+                Our website and services are intended for business and commercial purposes and are
+                not directed toward individuals under the age of 18.
+              </p>
+              <p>We do not knowingly collect personal information from children.</p>
+            </section>
+
+            <hr className="legal-divider" />
+
+            <section className="legal-section">
+              <h2>10. Changes to This Privacy Policy</h2>
+              <p>
+                We reserve the right to update or modify this Privacy Policy at any time. Changes
+                will be posted on this page with an updated revision date.
+              </p>
+            </section>
+
+            <hr className="legal-divider" />
+
+            <section className="legal-section">
+              <h2>11. Contact Us</h2>
+              <p>
+                For any questions regarding this Privacy Policy or the handling of your
+                information, please contact:
+              </p>
+              <div className="legal-contact-box">
+                <p>
+                  <strong>Shiv Om Industries</strong>
+                  <br />
+                  F-7(A), RIICO Industrial Area, Bigod, Tehsil Mandalgarh, District Bhilwara,
+                  Rajasthan, India
+                </p>
+                <p>
+                  <strong>Email:</strong>{' '}
+                  <a href="mailto:info@shivomindustries.com">info@shivomindustries.com</a>
+                </p>
+                <p>
+                  <strong>Phone:</strong>{' '}
+                  <a href="tel:+919928764042">+91 9928764042 / 8094567287</a>
+                </p>
+              </div>
+            </section>
+
+            <p className="legal-closing">
+              By using this website, you consent to the practices described in this Privacy Policy.
+            </p>
+          </div>
+        </div>
+
+        <footer>
+          <div className="footer-main">
+            <div className="footer-brand">
+              <div className="footer-logo">
+                Shiv <span>Om</span> Industries
+              </div>
+              <div className="footer-brand-desc">
+                Premium natural sandstone manufacturer and exporter from Rajasthan, India. Serving
+                global markets with architectural-grade stone products.
+              </div>
+            </div>
+
+            <div className="footer-col">
+              <div className="footer-col-title">Quick Links</div>
+              <ul className="footer-links">
+                <li><span onClick={() => showPage('about')}>About Us</span></li>
+                <li><span onClick={() => showPage('products')}>Products</span></li>
+                <li><span onClick={() => showPage('projects')}>Projects</span></li>
+                <li><span onClick={() => showPage('contact')}>Contact</span></li>
+              </ul>
+            </div>
+
+            <div className="footer-col">
+              <div className="footer-col-title">Product Range</div>
+              <ul className="footer-links">
+                <li><span onClick={() => showPage('products')}>Wall Claddings</span></li>
+                <li><span onClick={() => showPage('products')}>Stone Steps</span></li>
+                <li><span onClick={() => showPage('products')}>Steppings</span></li>
+                <li><span onClick={() => showPage('products')}>Pavers</span></li>
+                <li><span onClick={() => showPage('products')}>Cobbles</span></li>
+                <li><span onClick={() => showPage('products')}>Circulars</span></li>
+              </ul>
+            </div>
+
+            <div className="footer-col">
+              <div className="footer-col-title">Contact</div>
+              <div className="footer-contact-item">
+                <svg className="footer-contact-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                  <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
+                </svg>
+                <div className="footer-contact-text">
+                  RIICO Industrial Area, Plot No. F7(A), Bigod, Dist. Bhilwara-311601, Rajasthan, India
+                </div>
+              </div>
+              <div className="footer-contact-item">
+                <svg className="footer-contact-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+                  <polyline points="22,6 12,13 2,6" />
+                </svg>
+                <div className="footer-contact-text">
+                  <a href="mailto:info@shivomindustries.com">info@shivomindustries.com</a>
+                </div>
+              </div>
+              <div className="footer-contact-item">
+                <svg className="footer-contact-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                  <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z" />
+                </svg>
+                <div className="footer-contact-text">
+                  <a href="tel:+919928764042">+91 9928764042 / 8094567287</a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="footer-bottom">
+            <div className="footer-copy">&copy; 2026 Shiv Om Industries. All rights reserved.</div>
+            <div className="footer-policy-links">
+              <a
+                href="#"
+                onClick={(e) => {
+                  e.preventDefault()
+                  showPage('privacy')
+                }}
+              >
+                Privacy Policy
+              </a>
               <a href="#">Terms of Service</a>
               <a href="#">Export Terms</a>
             </div>
